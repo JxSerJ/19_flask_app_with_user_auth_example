@@ -356,5 +356,27 @@
       "name": "Мюзикл",
       "id": 18
     }
+  ],
+  "users": [
+    {
+      "username": "vasya",
+      "password": "my_little_pony",
+      "role": "user"
+    },
+    {
+      "username": "oleg",
+      "password": "qwerty",
+      "role": "user"
+    },
+    {
+      "username": "oleg_admin",
+      "password": "P@ssw0rd",
+      "role": "admin"
+    },
+    {
+      "username": "sergey",
+      "password": "admin",
+      "role": "admin"
+    }
   ]
 }

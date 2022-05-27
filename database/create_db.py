@@ -6,6 +6,7 @@ from constants import INITIAL_DATA_PATH
 from dao.model.movies import Movie
 from dao.model.directors import Director
 from dao.model.genres import Genre
+from dao.model.users import User
 
 
 def create_data(db):
@@ -21,6 +22,7 @@ def create_data(db):
             new_movies = []
             new_genres = []
             new_directors = []
+            new_users = []
 
             for entry in file_data['movies']:
                 new_movies.append(Movie(**entry))
@@ -31,9 +33,13 @@ def create_data(db):
             for entry in file_data['directors']:
                 new_directors.append(Director(**entry))
 
+            for entry in file_data['users']:
+                new_users.append(User(**entry))
+
             db.session.add_all(new_movies)
             db.session.add_all(new_genres)
             db.session.add_all(new_directors)
+            db.session.add_all(new_users)
             db.session.commit()
             db.session.close()
 
