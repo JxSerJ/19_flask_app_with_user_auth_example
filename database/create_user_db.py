@@ -7,6 +7,7 @@ from flask import current_app
 from dao.model.tokens import Token
 from helpers.constants import INITIAL_DATA_PATH, PWD_HASH_ALGORITHM, PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from dao.model.users import User
+from container import user_service
 
 
 def create_user_data(db):
@@ -31,15 +32,11 @@ def create_user_data(db):
             for entry in file_data['users']:
                 print(f'Generating hash for user {entry["username"]}')
                 entry['password_in_plain_view'] = entry['password']
-                hash_digest = pbkdf2_hmac(
-                    PWD_HASH_ALGORITHM,
-                    entry['password'].encode('utf-8'),  # encode into bytes
-                    PWD_HASH_SALT.encode('utf-8'),
-                    PWD_HASH_ITERATIONS
-                )
-                entry['password'] = base64.b64encode(hash_digest)
+                entry['password'] = user_service.generate_pwd_hash_b64(entry['password'])
+
                 if not current_app.config['DEBUG']:
                     entry.pop('password_in_plain_view')
+
                 new_user = User(**entry)
                 new_users.append(new_user)
             print('\nHash generation complete.')

@@ -25,7 +25,7 @@ class UserService:
         result_data = self.user_dao.get_by_username(username)
         return result_data
 
-    def generate_pwd_hash(self, password: str):
+    def generate_pwd_hash(self, password: str) -> bytes:
         hash_digest = pbkdf2_hmac(
             PWD_HASH_ALGORITHM,
             password.encode('utf-8'),  # encode into bytes
@@ -34,7 +34,7 @@ class UserService:
         )
         return hash_digest
 
-    def generate_pwd_hash_b64(self, password: str):
+    def generate_pwd_hash_b64(self, password: str) -> bytes:
         hash_digest = self.generate_pwd_hash(password)
         result_data = base64.b64encode(hash_digest)
         return result_data
