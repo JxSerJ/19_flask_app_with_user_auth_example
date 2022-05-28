@@ -1,5 +1,6 @@
 from flask import request
 from flask_restx import Resource
+from container import auth_service
 
 
 class AuthsView(Resource):
@@ -12,5 +13,5 @@ class AuthsView(Resource):
         if None in [username, password]:
             return '', 400
 
-        tokens = None
+        tokens = auth_service.generate_tokens(username, password)
         return tokens, 201
