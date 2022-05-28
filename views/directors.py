@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from flask_restx import Resource, Namespace
+
+from helpers.decorators import auth_required, admin_required
 from views.validator import validator
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
@@ -16,6 +18,7 @@ directors_schema = DirectorSchema(many=True)
 @directors_ns.route('/')
 class DirectorsView(Resource):
 
+    @auth_required
     def get(self):
 
         result_data = director_service.get_all()
@@ -25,6 +28,7 @@ class DirectorsView(Resource):
         result = directors_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def post(self):
 
         request_data = request.json
@@ -49,6 +53,7 @@ class DirectorsView(Resource):
 @directors_ns.route('/<int:director_id>')
 class DirectorView(Resource):
 
+    @auth_required
     def get(self, director_id: int):
 
         try:
@@ -59,6 +64,7 @@ class DirectorView(Resource):
         result = director_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def put(self, director_id: int):
 
         request_data = request.json
@@ -86,6 +92,7 @@ class DirectorView(Resource):
         result = director_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def patch(self, director_id: int):
 
         request_data = request.json
@@ -102,6 +109,7 @@ class DirectorView(Resource):
         result = director_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def delete(self, director_id: int):
 
         try:

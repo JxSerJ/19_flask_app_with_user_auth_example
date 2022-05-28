@@ -16,6 +16,8 @@ def create_user_data(db):
             db.create_all(bind='tokens')
             print('\nAll access tokens has been removed.\n')
             print("Generating user database...")
+            if current_app.config['DEBUG']:
+                print('Debug mode detected. User database will be regenerated with plain-view passwords.')
             db.drop_all(bind='users')
             db.create_all(bind='users')
 

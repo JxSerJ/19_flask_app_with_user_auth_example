@@ -12,6 +12,7 @@ class AuthService:
         self.user_service = user_service
 
     def generate_tokens(self, username, password, is_refresh=False):
+        print('User credentials acquired. Checking validity.')
         user = self.user_service.get_by_username(username)
 
         if user is None:
@@ -20,6 +21,9 @@ class AuthService:
         if not is_refresh:
             if not self.user_service.compare_passwords(user.password, password):
                 abort(400)
+            print(f'Credentials confirmed. User: {user.username}. Role: {user.role}. Generating tokens.')
+        else:
+            print('Refresh token acquired. Generating new tokens.')
 
         data = {
             "username": user.username,
@@ -38,6 +42,7 @@ class AuthService:
             "access_token": access_token,
             "refresh_token": refresh_token
         }
+        print('Tokens generated.')
 
         return tokens
 

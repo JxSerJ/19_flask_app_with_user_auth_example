@@ -13,10 +13,12 @@ def auth_required(func):
         token = auth_data.split("Bearer ")[-1]
 
         try:
-            jwt.decode(token, SECRET, algorithms=JWT_ALGORITHM)
+            user_data = jwt.decode(token, SECRET, algorithms=JWT_ALGORITHM)
         except Exception as err:
             print("JWT Decode Exception: ", err)
             abort(401)
+
+        print(f'User: {user_data["username"]}. Role: {user_data["role"]}. Authorized.')
 
         return func(*args, **kwargs)
 

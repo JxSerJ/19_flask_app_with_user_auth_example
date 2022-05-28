@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from flask_restx import Resource, Namespace
+
+from helpers.decorators import auth_required, admin_required
 from views.validator import validator
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
@@ -16,6 +18,7 @@ movies_schema = MovieSchema(many=True)
 @movies_ns.route('/')
 class MoviesView(Resource):
 
+    @auth_required
     def get(self):
 
         director_id = request.args.get('director_id')
@@ -30,6 +33,7 @@ class MoviesView(Resource):
         result = movies_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def post(self):
 
         request_data = request.json
@@ -54,6 +58,7 @@ class MoviesView(Resource):
 @movies_ns.route('/<int:movie_id>')
 class MovieView(Resource):
 
+    @auth_required
     def get(self, movie_id: int):
 
         try:
@@ -64,6 +69,7 @@ class MovieView(Resource):
         result = movie_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def put(self, movie_id: int):
 
         request_data = request.json
@@ -91,6 +97,7 @@ class MovieView(Resource):
         result = movie_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def patch(self, movie_id: int):
 
         request_data = request.json
@@ -107,6 +114,7 @@ class MovieView(Resource):
         result = movie_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def delete(self, movie_id: int):
 
         try:

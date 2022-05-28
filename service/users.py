@@ -32,18 +32,16 @@ class UserService:
             PWD_HASH_SALT.encode('utf-8'),
             PWD_HASH_ITERATIONS
         )
+        return hash_digest
+
+    def generate_pwd_hash_b64(self, password: str):
+        hash_digest = self.generate_pwd_hash(password)
         result_data = base64.b64encode(hash_digest)
         return result_data
 
     def compare_passwords(self, password_hash, password_for_comparison) -> bool:
         pwd_hash_decoded_digest = base64.b64decode(password_hash)
-
-        pwd_for_comp_hash_digest = pbkdf2_hmac(
-            PWD_HASH_ALGORITHM,
-            password_for_comparison.encode('utf-8'),  # encode into bytes
-            PWD_HASH_SALT.encode('utf-8'),
-            PWD_HASH_ITERATIONS
-        )
+        pwd_for_comp_hash_digest = self.generate_pwd_hash(password_for_comparison)
 
         result = hmac.compare_digest(pwd_hash_decoded_digest, pwd_for_comp_hash_digest)
 

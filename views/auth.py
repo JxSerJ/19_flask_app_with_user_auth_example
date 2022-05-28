@@ -5,6 +5,7 @@ from container import auth_service
 
 auth_ns = Namespace('auth')
 
+@auth_ns.route('/')
 class AuthsView(Resource):
     def post(self):
         data = request.json

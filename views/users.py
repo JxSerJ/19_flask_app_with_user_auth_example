@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from flask_restx import Resource, Namespace
+
+from helpers.decorators import admin_required
 from views.validator import validator
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
@@ -16,6 +18,7 @@ users_schema = UserSchema(many=True)
 @users_ns.route('/')
 class UsersView(Resource):
 
+    @admin_required
     def get(self):
 
         result_data = user_service.get_all()
@@ -25,6 +28,7 @@ class UsersView(Resource):
         result = users_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def post(self):
 
         request_data = request.json
@@ -48,7 +52,7 @@ class UsersView(Resource):
 
 @users_ns.route('/<int:user_id>')
 class UserView(Resource):
-
+    @admin_required
     def get(self, user_id: int):
 
         try:
@@ -59,6 +63,7 @@ class UserView(Resource):
         result = user_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def put(self, user_id: int):
 
         request_data = request.json
@@ -86,6 +91,7 @@ class UserView(Resource):
         result = user_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def patch(self, user_id: int):
 
         request_data = request.json
@@ -102,6 +108,7 @@ class UserView(Resource):
         result = user_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def delete(self, user_id: int):
 
         try:

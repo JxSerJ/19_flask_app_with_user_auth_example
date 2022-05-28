@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from flask_restx import Resource, Namespace
+
+from helpers.decorators import admin_required, auth_required
 from views.validator import validator
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
@@ -16,6 +18,7 @@ genres_schema = GenreSchema(many=True)
 @genres_ns.route('/')
 class GenresView(Resource):
 
+    @auth_required
     def get(self):
 
         result_data = genre_service.get_all()
@@ -25,6 +28,7 @@ class GenresView(Resource):
         result = genres_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def post(self):
 
         request_data = request.json
@@ -49,6 +53,7 @@ class GenresView(Resource):
 @genres_ns.route('/<int:genre_id>')
 class GenreView(Resource):
 
+    @auth_required
     def get(self, genre_id: int):
 
         try:
@@ -59,6 +64,7 @@ class GenreView(Resource):
         result = genre_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def put(self, genre_id: int):
 
         request_data = request.json
@@ -86,6 +92,7 @@ class GenreView(Resource):
         result = genre_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def patch(self, genre_id: int):
 
         request_data = request.json
@@ -102,6 +109,7 @@ class GenreView(Resource):
         result = genre_schema.dump(result_data)
         return result, 200
 
+    @admin_required
     def delete(self, genre_id: int):
 
         try:
