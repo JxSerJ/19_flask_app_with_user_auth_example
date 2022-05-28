@@ -6,14 +6,13 @@ from helpers.constants import INITIAL_DATA_PATH
 from dao.model.movies import Movie
 from dao.model.directors import Director
 from dao.model.genres import Genre
-from dao.model.users import User
 
 
 def create_data(db):
-
     try:
         with current_app.app_context():
-            db.drop_all()
+            print("Generating main database.")
+            db.drop_all(bind=None)
             db.create_all()
 
             with open(INITIAL_DATA_PATH, 'r', encoding='UTF-8') as file:
@@ -22,7 +21,6 @@ def create_data(db):
             new_movies = []
             new_genres = []
             new_directors = []
-            new_users = []
 
             for entry in file_data['movies']:
                 new_movies.append(Movie(**entry))
@@ -33,18 +31,14 @@ def create_data(db):
             for entry in file_data['directors']:
                 new_directors.append(Director(**entry))
 
-            for entry in file_data['users']:
-                new_users.append(User(**entry))
-
             db.session.add_all(new_movies)
             db.session.add_all(new_genres)
             db.session.add_all(new_directors)
-            db.session.add_all(new_users)
             db.session.commit()
             db.session.close()
 
-        print("\nDatabase regenerated successfully!")
+        print("Database regenerated successfully!\n")
 
     except Exception as err:
-        print(f"Database error: {err} \n\n"
-              f"Database regeneration incomplete. Data may be corrupted!")
+        print(f"Database error: {err}\n"
+              f"Database regeneration incomplete. Data may be corrupted!\n")

@@ -1,8 +1,10 @@
 
-INITIAL_DATA_PATH = "../database/initial_data.json"
-DATABASE_PATH = "../database/database.db"
+INITIAL_DATA_PATH = "database/initial_data.json"
+DATABASE_PATH = "database/database.db"
+USER_DATABASE_PATH = "database/users.db"
+TOKEN_DATABASE_PATH = "database/tokens.db"
 SECRET = 'dXIkUS1wRHJ3amJwblI1ZDpLVlVBSlFyalR1TmE6SjphMXNWNT9FV2okIWdFMkZYUC1kYXFmP0RQUVpEalNBcw=='
 PWD_HASH_ALGORITHM = 'sha512'
-PWD_HASH_ITERATIONS = 12_482_617
+PWD_HASH_ITERATIONS = 1_482_617
 PWD_HASH_SALT = 'YlB50YOQCnP_!YdIQOchHOGH1n1vs7-TCkrl2Vym8b!PrwclyMiX?xglPnb9_:Yv'
 JWT_ALGORITHM = 'HS512'
