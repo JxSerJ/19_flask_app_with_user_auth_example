@@ -11,14 +11,15 @@ class AuthService:
     def __init__(self, user_service: UserService):
         self.user_service = user_service
 
-    def generate_tokens(self, username, password):
+    def generate_tokens(self, username, password, is_refresh=False):
         user = self.user_service.get_by_username(username)
 
         if user is None:
             abort(404)
 
-        if not self.user_service.compare_passwords(user.password, password):
-            abort(400)
+        if not is_refresh:
+            if not self.user_service.compare_passwords(user.password, password):
+                abort(400)
 
         data = {
             "username": user.username,
@@ -37,5 +38,14 @@ class AuthService:
             "access_token": access_token,
             "refresh_token": refresh_token
         }
+
+        return tokens
+
+    def approve_refresh_token(self, refresh_token):
+
+        data = jwt.decode(refresh_token, SECRET, algorithms=JWT_ALGORITHM)
+        username = data.get('username')
+
+        tokens = self.generate_tokens(username, None, is_refresh=True)
 
         return tokens
