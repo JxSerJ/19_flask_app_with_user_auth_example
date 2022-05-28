@@ -24,7 +24,7 @@ def create_user_data(db):
 
             new_users = []
             tokens = []
-            print('Generating hashes for passwords of known users . Hang tight. It can take a while. Hash algorithms '
+            print('Generating hashes for passwords of known users. Hang tight. It can take a while. Hash algorithms '
                   'are strong here...\n')
             for entry in file_data['users']:
                 print(f'Generating hash for user {entry["username"]}')

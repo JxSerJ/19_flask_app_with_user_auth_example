@@ -11,5 +11,5 @@ class Config(object):
     RESTX_JSON = {'ensure_ascii': False, 'indent': 4, 'sort_keys': False}
     JSON_AS_ASCII = False
     JSON_SORT_KEYS = False
-    REGENERATE_DB_ON_START = True
-    REGENERATE_USER_DB_ON_START = True
+    REGENERATE_DB_ON_START = False
+    REGENERATE_USER_DB_ON_START = False

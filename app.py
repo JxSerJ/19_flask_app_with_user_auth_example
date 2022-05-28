@@ -34,12 +34,14 @@ def initialize_extensions(app):
     api.add_namespace(auth_ns)
 
     if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        if Config.REGENERATE_DB_ON_START:
+        if not Config.REGENERATE_USER_DB_ON_START and not Config.REGENERATE_DB_ON_START:
+            print("Database regeneration skipped! You're now using database saved on storage.")
+        if Config.REGENERATE_USER_DB_ON_START:
             with app.app_context():
                 create_user_data(db)
+        if Config.REGENERATE_DB_ON_START:
+            with app.app_context():
                 create_data(db)
-        else:
-            print("Database regeneration skipped! You're now using database saved on storage.")
 
 
 if __name__ == '__main__':
