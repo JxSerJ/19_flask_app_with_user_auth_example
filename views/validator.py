@@ -46,11 +46,14 @@ def validator(method: str, request_data: Any, Obj: object, Obj_schema: object) -
                                                  Obj.year == request_data['year'],
                                                  Obj.director_id == request_data['director_id']).first()
             db.session.close()
+        elif Obj.__name__ == "User":
+            query = db.session.query(Obj).filter(Obj.username == request_data['username']).first()
+            db.session.close()
         else:
             query = db.session.query(Obj).filter(Obj.name == request_data['name']).first()
             db.session.close()
 
         query_data = Obj_schema.dump(query)
         if len(query_data) > 0:
-            msg = f"Data already in database. Data ID: {query.id}"
+            msg = f"{Obj.__name__} already in database. {Obj.__name__} ID: {query.id}"
             raise ValidationError(message=msg)
