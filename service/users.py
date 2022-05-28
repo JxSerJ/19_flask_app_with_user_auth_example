@@ -1,7 +1,8 @@
 import base64
+import hmac
 from hashlib import pbkdf2_hmac
 
-from constants import PWD_HASH_ALGORITHM, PWD_HASH_SALT, PWD_HASH_ITERATIONS
+from helpers.constants import PWD_HASH_ALGORITHM, PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from dao.users import UserDAO
 from dao.model.users import UserSchema
 
@@ -12,6 +13,18 @@ class UserService:
     def __init__(self, dao: UserDAO):
         self.user_dao = dao
 
+    def get_all(self):
+        result_data = self.user_dao.get_all()
+        return result_data
+
+    def get_one(self, user_id: int):
+        result_data = self.user_dao.get_one(user_id)
+        return result_data
+
+    def get_by_username(self, username):
+        result_data = self.user_dao.get_by_username(username)
+        return result_data
+
     def generate_pwd_hash(self, password: str):
         hash_digest = pbkdf2_hmac(
             PWD_HASH_ALGORITHM,
@@ -21,15 +34,21 @@ class UserService:
         )
         result_data = base64.b64encode(hash_digest)
         return result_data
-        
-    def get_all(self):
-        result_data = self.user_dao.get_all()
-        return result_data
-    
-    def get_one(self, user_id: int):
-        result_data = self.user_dao.get_one(user_id)
-        return result_data
-    
+
+    def compare_passwords(self, password_hash, password_for_comparison) -> bool:
+        pwd_hash_decoded_digest = base64.b64decode(password_hash)
+
+        pwd_for_comp_hash_digest = pbkdf2_hmac(
+            PWD_HASH_ALGORITHM,
+            password_for_comparison.encode('utf-8'),  # encode into bytes
+            PWD_HASH_SALT.encode('utf-8'),
+            PWD_HASH_ITERATIONS
+        )
+
+        result = hmac.compare_digest(pwd_hash_decoded_digest, pwd_for_comp_hash_digest)
+
+        return result
+
     def create(self, data):
         data['password'] = self.generate_pwd_hash(data['password'])
         result_data = self.user_dao.create(data)

@@ -1,4 +1,4 @@
-from constants import DATABASE_PATH
+from helpers.constants import DATABASE_PATH
 
 
 class Config(object):

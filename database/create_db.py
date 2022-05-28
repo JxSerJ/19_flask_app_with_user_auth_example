@@ -2,7 +2,7 @@ import json
 
 from flask import current_app
 
-from constants import INITIAL_DATA_PATH
+from helpers.constants import INITIAL_DATA_PATH
 from dao.model.movies import Movie
 from dao.model.directors import Director
 from dao.model.genres import Genre
