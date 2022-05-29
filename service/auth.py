@@ -18,7 +18,7 @@ class AuthService:
         user = self.user_service.get_by_username(username)
 
         if user is None:
-            abort(404)
+            abort(404, "User doesn't exists")
 
         if not is_refresh:
             print('User credentials acquired. Checking validity.')
@@ -44,7 +44,7 @@ class AuthService:
             "refresh_token": refresh_token
         }
         print(f'Tokens generated. Signature: {access_token[-8:]}/{refresh_token[-8:]}')
-
+        self.load_token_into_db(tokens, user.id)
         return tokens
 
     def approve_refresh_token(self, refresh_token):
@@ -59,3 +59,15 @@ class AuthService:
         tokens = self.generate_tokens(username, None, is_refresh=True)
 
         return tokens
+
+    def load_token_into_db(self, token_data: dict, user_id: int):
+        token = self.auth_dao.get_one_by_user_id(user_id)
+        self.auth_dao.update(token, token_data)
+
+    def create_token_entry_in_db(self, user_id: int):
+        data = {'user_id': user_id}
+        new_token_entry = self.auth_dao.create(data)
+        return new_token_entry
+
+    def delete(self, user_id):
+        self.auth_dao.delete(user_id)

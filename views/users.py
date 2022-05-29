@@ -6,7 +6,7 @@ from views.validator import validator
 from marshmallow import ValidationError
 from sqlalchemy.exc import NoResultFound
 
-from container import user_service
+from container import user_service, auth_service
 from dao.model.users import UserSchema, User
 
 users_ns = Namespace('users')
@@ -26,6 +26,8 @@ class UsersView(Resource):
             return "Data not found. Empty database.", 404
 
         result = users_schema.dump(result_data)
+        for entry in result:
+            entry['password'] = entry['password'].decode('utf-8')
         return result, 200
 
     @admin_required
@@ -42,12 +44,11 @@ class UsersView(Resource):
         result = user_schema.dump(result_data)
 
         data_id = result["id"]
+        user_token_entry_id = auth_service.create_token_entry_in_db(data_id).id
+        result['token_id'] = user_token_entry_id
+        user_service.update(data_id, {'token_id': user_token_entry_id})
 
-        response = jsonify(result)
-        response.status_code = 201
-        response.headers['location'] = f'/{users_ns.name}/{data_id}'
-
-        return response
+        return f"User created. User ID:{data_id}", 201, {'location': f'/{users_ns.name}/{data_id}'}
 
 
 @users_ns.route('/<int:user_id>')
@@ -61,6 +62,7 @@ class UserView(Resource):
             return f"User ID: {user_id} not found", 404
 
         result = user_schema.dump(result_data)
+        result['password'] = result['password'].decode('utf-8')
         return result, 200
 
     @admin_required
@@ -89,6 +91,7 @@ class UserView(Resource):
             return f"User ID: {user_id} not found", 404
 
         result = user_schema.dump(result_data)
+        result['password'] = result['password'].decode('utf-8')
         return result, 200
 
     @admin_required
@@ -106,6 +109,7 @@ class UserView(Resource):
             return f"User ID: {user_id} not found", 404
 
         result = user_schema.dump(result_data)
+        result['password'] = result['password'].decode('utf-8')
         return result, 200
 
     @admin_required
@@ -115,5 +119,7 @@ class UserView(Resource):
             user_service.delete(user_id)
         except NoResultFound:
             return f"User ID: {user_id} not found", 404
+
+        auth_service.delete(user_id)
 
         return f"Data ID: {user_id} was deleted successfully.", 200

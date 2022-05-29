@@ -1,3 +1,5 @@
+from sqlalchemy.exc import NoResultFound
+
 from dao.model.users import User
 
 
@@ -13,12 +15,16 @@ class UserDAO:
 
     def get_one(self, user_id: int):
 
-        result_data = self.session.query(User).filter(User.id == user_id).one()
+        result_data = self.session.query(User).filter(User.id == user_id).first()
+        if not result_data:
+            raise NoResultFound
         return result_data
 
     def get_by_username(self, username: str):
 
-        result_data = self.session.query(User).filter(User.username == username).one()
+        result_data = self.session.query(User).filter(User.username == username).first()
+        if not result_data:
+            raise NoResultFound
         return result_data
 
     def create(self, data):

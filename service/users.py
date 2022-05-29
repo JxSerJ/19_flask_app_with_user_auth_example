@@ -2,6 +2,8 @@ import base64
 import hmac
 from hashlib import pbkdf2_hmac
 
+from flask import current_app
+
 from helpers.constants import PWD_HASH_ALGORITHM, PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from dao.users import UserDAO
 
@@ -45,7 +47,9 @@ class UserService:
         return result
 
     def create(self, data):
-        data['password'] = self.generate_pwd_hash(data['password'])
+        if current_app.config['DEBUG']:
+            data['password_in_plain_view'] = data['password']
+        data['password'] = self.generate_pwd_hash_b64(data['password'])
         result_data = self.user_dao.create(data)
         return result_data
 

@@ -20,7 +20,7 @@ class User(db.Model):
 class UserSchema(Schema):
     id = fields.Integer(dump_only=True)
     username = fields.String(unique=True)
-    password = fields.String()
+    password = fields.Field()
     if Config.DEBUG:
         password_in_plain_view = fields.String()  # for debug only. Will be deleted if flask DEBUG == False
     role = fields.String()

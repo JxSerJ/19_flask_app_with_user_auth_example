@@ -8,17 +8,22 @@ from database.set_db import db
 def validator(method: str, request_data: Any, Obj: object, Obj_schema: object) -> None:
     # validating data structure
 
-    movie_keys = set(Obj_schema.fields.keys())
-    movie_keys.remove('id')
+    obj_keys = set(Obj_schema.fields.keys())
+    obj_keys.remove('id')
+    if "token_id" in obj_keys:
+        obj_keys.remove('token_id')
+    if 'password_in_plain_view' in obj_keys:
+        obj_keys.remove('password_in_plain_view')
+
     data_keys = request_data.keys()
     if 'id' in data_keys:
         data_keys = set(data_keys.remove('id'))
     else:
         data_keys = set(data_keys)
-    if data_keys != movie_keys:
+    if data_keys != obj_keys:
         messages = {}
-        diff1 = movie_keys.difference(data_keys)
-        diff2 = data_keys.difference(movie_keys)
+        diff1 = obj_keys.difference(data_keys)
+        diff2 = data_keys.difference(obj_keys)
         if method in ["PUT", "POST"]:
             for diff_entry in diff1:
                 messages[diff_entry] = "Missing field"
@@ -33,7 +38,7 @@ def validator(method: str, request_data: Any, Obj: object, Obj_schema: object) -
                             "processing. {} data keys enumerated in corresponding field"
                             .format(method, error_text_entry[method][0],
                             error_text_entry[method][1].title()),
-                   f"{error_text_entry[method][1]}_keys": list(movie_keys),
+                   f"{error_text_entry[method][1]}_keys": list(obj_keys),
                    "incorrect_data": messages}
 
             raise ValidationError(message=msg)
