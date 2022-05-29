@@ -1,7 +1,4 @@
 from dao.directors import DirectorDAO
-from dao.model.directors import DirectorSchema
-
-director_schema = DirectorSchema()
 
 
 class DirectorService:

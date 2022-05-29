@@ -1,11 +1,9 @@
-import base64
 import json
-from hashlib import pbkdf2_hmac
 
 from flask import current_app
 
-from dao.model.tokens import Token
-from helpers.constants import INITIAL_DATA_PATH, PWD_HASH_ALGORITHM, PWD_HASH_SALT, PWD_HASH_ITERATIONS
+from dao.model.auth import Token
+from helpers.constants import INITIAL_DATA_PATH
 from dao.model.users import User
 from container import user_service
 

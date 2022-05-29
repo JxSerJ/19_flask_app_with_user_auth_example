@@ -10,6 +10,7 @@ from service.directors import DirectorService
 from service.genres import GenreService
 from service.users import UserService
 
+from dao.auth import AuthDAO
 from service.auth import AuthService
 
 
@@ -25,4 +26,5 @@ genre_service = GenreService(dao=genre_dao)
 user_dao = UserDAO(db.session)
 user_service = UserService(dao=user_dao)
 
-auth_service = AuthService(user_service)
+auth_dao = AuthDAO(db.session)
+auth_service = AuthService(user_service, dao=auth_dao)

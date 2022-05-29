@@ -4,9 +4,6 @@ from hashlib import pbkdf2_hmac
 
 from helpers.constants import PWD_HASH_ALGORITHM, PWD_HASH_SALT, PWD_HASH_ITERATIONS
 from dao.users import UserDAO
-from dao.model.users import UserSchema
-
-user_schema = UserSchema()
 
 
 class UserService:

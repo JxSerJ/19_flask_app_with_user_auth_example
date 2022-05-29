@@ -1,7 +1,4 @@
 from dao.movies import MovieDAO
-from dao.model.movies import MovieSchema
-
-movie_schema = MovieSchema()
 
 
 class MovieService:

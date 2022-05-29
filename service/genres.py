@@ -1,7 +1,4 @@
 from dao.genres import GenreDAO
-from dao.model.genres import GenreSchema
-
-genre_schema = GenreSchema()
 
 
 class GenreService:

@@ -6,24 +6,25 @@ from flask import abort
 
 from helpers.constants import SECRET, JWT_ALGORITHM
 from service.users import UserService
+from dao.auth import AuthDAO
+
 
 class AuthService:
-    def __init__(self, user_service: UserService):
+    def __init__(self, user_service: UserService, dao: AuthDAO):
         self.user_service = user_service
+        self.auth_dao = dao
 
     def generate_tokens(self, username, password, is_refresh=False):
-        print('User credentials acquired. Checking validity.')
         user = self.user_service.get_by_username(username)
 
         if user is None:
             abort(404)
 
         if not is_refresh:
+            print('User credentials acquired. Checking validity.')
             if not self.user_service.compare_passwords(user.password, password):
                 abort(400)
             print(f'Credentials confirmed. User: {user.username}. Role: {user.role}. Generating tokens.')
-        else:
-            print('Refresh token acquired. Generating new tokens.')
 
         data = {
             "username": user.username,
@@ -42,14 +43,18 @@ class AuthService:
             "access_token": access_token,
             "refresh_token": refresh_token
         }
-        print('Tokens generated.')
+        print(f'Tokens generated. Signature: {access_token[-8:]}/{refresh_token[-8:]}')
 
         return tokens
 
     def approve_refresh_token(self, refresh_token):
 
+        print('Refresh token acquired. Checking validity.')
+
         data = jwt.decode(refresh_token, SECRET, algorithms=JWT_ALGORITHM)
         username = data.get('username')
+        role = data.get('role')
+        print(f'Credentials confirmed. User: {username}. Role: {role}. Generating tokens.')
 
         tokens = self.generate_tokens(username, None, is_refresh=True)
 
